@@ -1,7 +1,6 @@
 
 var express = require('express');
 var router = express.Router();
-
 const upload = require('../../../config/multer');
 const defaultRes = require('../../../module/utils/utils');
 const statusCode = require('../../../module/utils/statusCode');
@@ -19,9 +18,7 @@ var url = require('url');
 // SERVICE PROVIDER가 외부 서비스 등록
 //REQ : header에 token, 외부서비스 이름, 외부서비스 묶음URL , idx
 //RES: 
-
 //req : name,url,externalServiceDetailNames
-
 //ok
 router.post("/", authUtil.isServiceProvider, async(req, res)=>{
 
@@ -79,13 +76,6 @@ router.post("/", authUtil.isServiceProvider, async(req, res)=>{
                         else{
                             res.status(200).send(defaultRes.successTrue(statusCode.OK, resMessage.POST_EXTERNAL_SERVICE_SUCCESS));
                         }
-
-                           
-
-        
-
-
-                        
                     }
 
 
@@ -97,19 +87,61 @@ router.post("/", authUtil.isServiceProvider, async(req, res)=>{
         
 });
 
+
+
+//일반 uSER가 가능한 외부 서비스 목록에서 외부 서비스 등록
+//REQ : header에 token, 가능한 외부 서비스 목록에서 선택한 외부서비스묶음 IDX 
+//ok
+router.post("/:externalIdx", authUtil.isLoggedin, async(req, res)=>{
+    const {externalIdx} = req.params;
+    const userIdx = req.decoded.user_idx;
+
+    if (!externalIdx) {
+        res.status(200).send(defaultRes.successTrue(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+    } else {
+                    
+                const getExternalServiceIdQuery = `SELECT * FROM user_external_service WHERE user_idx = ? AND external_service_idx = ?`;
+                const getExternalServiceIdResult  = await db.queryParam_Parse(getExternalServiceIdQuery,[userIdx,externalIdx]);
+
+                if(!getExternalServiceIdResult){
+                    res.status(200).send(defaultRes.successFalse(statusCode.DB_ERROR, resMessage.POST_BOARD_ERROR));
+
+                }else if(getExternalServiceIdResult[0].length > 0){
+                    res.status(200).send(defaultRes.successFalse(statusCode.DB_ERROR, resMessage.POST_EXTERNAL_SERVICE_EXIST));
+                }
+                else{
+                    const postUserExternalServiceQuery = `INSERT INTO user_external_service VALUES(?,?)`;
+                    const postUserExternalServiceResult  = await db.queryParam_Parse(postUserExternalServiceQuery,[userIdx,externalIdx]);
+
+                    if(!postUserExternalServiceResult){
+                        res.status(200).send(defaultRes.successFalse(statusCode.DB_ERROR, resMessage.POST_BOARD_ERROR));
+                    }else{
+                        res.status(200).send(defaultRes.successTrue(statusCode.OK, resMessage.POST_BOARD_SUCCESS));
+                    }
+
+                }
+    }
+});
+
+
 //user가 등록한 외부 서비스 목록 조회
 //REQ headers.token
 //response USER가 등록한 외부서비스 IDX, 외부서비스 URL, 이름
+//ok
 router.get('/',authUtil.isLoggedin, async (req, res) => { 
-    let getPostQuery  = "SELECT * FROM board";
-    
-    const getPostResult = await db.queryParam_None(getPostQuery);
+    let getPostQuery  = "SELECT user_idx,external_service_idx,name,url \
+     FROM user_external_service \
+INNER JOIN external_service ON external_service_idx = idx \
+WHERE user_idx = ?";
+    const userIdx = req.decoded.user_idx;
+
+    const getPostResult = await db.queryParam_Parse(getPostQuery,[userIdx]);
 
     //쿼리문의 결과가 실패이면 null을 반환한다
     if (!getPostResult) { //쿼리문이 실패했을 때
-        res.status(200).send(defaultRes.successFalse(statusCode.INTERNAL_SERVER_ERROR, resMessage.POST_SELECT_ERROR));
+        res.status(200).send(defaultRes.successFalse(statusCode.INTERNAL_SERVER_ERROR, resMessage.EXTERNAL_SERVICE_GET_ERROR));
     } else { //쿼리문이 성공했을 때
-        res.status(200).send(defaultRes.successTrue(statusCode.OK, resMessage.POST_SELECT_SUCCESS,getPostResult[0]));
+        res.status(200).send(defaultRes.successTrue(statusCode.OK, resMessage.EXTERNAL_SERVICE_GET_SUCCESS,getPostResult[0]));
     }
 });
 
@@ -118,89 +150,59 @@ router.get('/',authUtil.isLoggedin, async (req, res) => {
 
 //가능한 외부서비스 목록 조회
 //RESPONSE 가능한 외부서비스IDX, 이름 , URL
-router.get('/like', authUtil.isLoggedin, async (req, res) => {
+//ok
+router.get('/available',async (req, res) => { 
+    let getPostQuery  = "SELECT * FROM external_service";
+    const getPostResult = await db.queryParam_None(getPostQuery);
 
-    const userIdx = req.decoded.user_idx;
-    console.log("ss");
-    console.log(userIdx);
-
-    let getLikeBoardQuery  = `SELECT b.idx, b.name,b.type FROM board b 
-    INNER JOIN board_like bl ON bl.board_idx = b.idx 
-    WHERE user_idx = ?`;
-    
-    const getLikeBoardResult = await db.queryParam_Parse(getLikeBoardQuery,[userIdx]);
-    console.log("sss");
-    console.log(getLikeBoardResult[0]);
-
-    let ans = getLikeBoardResult[0];
-    for(var i = 0;i<getLikeBoardResult[0].length;i++){
-        ans[i]["is_love"]=1;
-    }
-
-    console.log("ans");
-    console.log(ans);
     //쿼리문의 결과가 실패이면 null을 반환한다
-    if (!getLikeBoardResult) { //쿼리문이 실패했을 때
-        res.status(200).send(defaultRes.successFalse(statusCode.INTERNAL_SERVER_ERROR, resMessage.BOARD_LIKE_SELECT_ERROR));
-    } else if(getLikeBoardResult.length === 0){
-        res.status(200).send(defaultRes.successFalse(statusCode.INTERNAL_SERVER_ERROR, resMessage.BOARD_LIKE_SELECT_ERROR));
-    }else{ //쿼리문이 성공했을 때
-        res.status(200).send(defaultRes.successTrue(statusCode.OK, resMessage.BOARD_LIKE_SELECT_SUCCESS,ans));
+    if (!getPostResult) { //쿼리문이 실패했을 때
+        res.status(200).send(defaultRes.successFalse(statusCode.INTERNAL_SERVER_ERROR, resMessage.EXTERNAL_SERVICE_GET_ERROR));
+    } else { //쿼리문이 성공했을 때
+        res.status(200).send(defaultRes.successTrue(statusCode.OK, resMessage.EXTERNAL_SERVICE_GET_SUCCESS,getPostResult[0]));
     }
 });
 
 
-//일반 uSER가 가능한 외부 서비스 목록에서 외부 서비스 등록
-//REQ : header에 token, 가능한 외부 서비스 목록에서 선택한 외부서비스묶음 IDX
-// 
-router.post("/", authUtil.isAdmin, async(req, res)=>{
-    const {name,type} = req.body;
-    //저장 시 필수 값인 게시물Id와 제목(title)이 없으면 실패 response 전송
 
-    if (!name && !type) {
-        res.status(200).send(defaultRes.successTrue(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+
+//일반 USER의 특정 외부 서비스 삭제
+//REQ : header에 token, 외부서비스묶음idx
+//ok
+router.delete('/:externalIdx', authUtil.isLoggedin, async(req, res) => {
+    const externalIdx = req.params.externalIdx;
+    const userIdx = req.decoded.user_idx;
+
+    const deleteBoardQuery = "DELETE FROM user_external_service WHERE user_idx = ? AND external_service_idx = ?";
+    const deleteBoardResult = await db.queryParam_Parse(deleteBoardQuery, [userIdx,externalIdx]);
+
+
+    if (!deleteBoardResult) {
+        res.status(200).send(defaultRes.successFalse(statusCode.INTERNAL_SERVER_ERROR, resMessage.EXTERNAL_SERVICE_DELETE_ERROR));
     } else {
-
-        try{
-                const getBoardRequestQuery = `SELECT request_cnt FROM board_request WHERE name = ?`;
-                const getBoardRequestResult  = await db.queryParam_Parse(getBoardRequestQuery,[name]) || null;
-                
-                console.log(getBoardRequestResult[0]);
-                const request_cnt = JSON.parse(JSON.stringify(getBoardRequestResult[0])) || null;
-                const req_cnt = request_cnt[0].request_cnt;
-            
-
-                 if(req_cnt >= 100){
-
-                    const postBoardQuery = `INSERT INTO board(name, type) VALUES(?,?)`;
-                    const postBoardResult  = await db.queryParam_Parse(postBoardQuery,[name,type]);
-                    if(!getBoardRequestResult){
-                        res.status(200).send(defaultRes.successFalse(statusCode.DB_ERROR, resMessage.POST_BOARD_ERROR));
-                     } else if(getBoardRequestResult === 0){
-                        res.status(200).send(defaultRes.successFalse(statusCode.DB_ERROR, resMessage.POST_BOARD_ERROR));
-                    }else{
-                        res.status(200).send(defaultRes.successTrue(statusCode.OK, resMessage.POST_BOARD_SUCCESS));
-                    }
-
-                 }else{
-                    res.status(200).send(defaultRes.successTrue(statusCode.OK, resMessage.POST_BOARD_ERROR));
-                }
-            }catch(err){
-                res.status(200).send(defaultRes.successFalse(statusCode.DB_ERROR, resMessage.POST_BOARD_ERROR));
-            }
+        if(deleteBoardResult.affectedRows  > 0){
+            res.status(200).send(defaultRes.successTrue(statusCode.OK, resMessage.EXTERNAL_SERVICE_DELETE_SUCCESS));
+        }else{
+            res.status(200).send(defaultRes.successFalse(statusCode.OK, resMessage.EXTERNAL_SERVICE_DELETE_NOTHING));
         }
+    }
 });
+
+
+
+
+
 
 
 
 
 // SERVICE PROVIDER가 특정 외부 서비스 수정
 //REQ : header에 token, 외부서비스묶음 idx
-
-router.put('/:boardIdx', authUtil.isAdmin, async(req, res) => {
+// name , url
+// external_service_detail 에는 idx, name,external_service_idx
+router.put('/:boardIdx', authUtil.isServiceProvider, async(req, res) => {
     const boardIdx = req.params.boardIdx;
     
-
     //name or type 하나만인경우도 추가하기!!
     let name = "";
     let type = "";
@@ -231,8 +233,6 @@ router.put('/:boardIdx', authUtil.isAdmin, async(req, res) => {
 //REQ : 메인어플리케이션idx,특정 목표에 대한 idx
 router.put('/:boardIdx', authUtil.isAdmin, async(req, res) => {
     const boardIdx = req.params.boardIdx;
-    
-
     //name or type 하나만인경우도 추가하기!!
     let name = "";
     let type = "";
@@ -259,27 +259,6 @@ router.put('/:boardIdx', authUtil.isAdmin, async(req, res) => {
 });
 
 
-
-
-//일반 USER의 특정 외부 서비스 삭제
-//REQ : header에 token, 외부서비스묶음idx
-router.delete('/:boardIdx', authUtil.isAdmin, async(req, res) => {
-    const boardIdx = req.params.boardIdx;
-
-    const deleteBoardQuery = "DELETE FROM board WHERE idx = ?";
-    const deleteBoardResult = await db.queryParam_Parse(deleteBoardQuery, [boardIdx]);
-
-
-    if (!deleteBoardResult) {
-        res.status(200).send(defaultRes.successFalse(statusCode.INTERNAL_SERVER_ERROR, resMessage.BOARD_DELETE_ERROR));
-    } else {
-        if(deleteBoardResult.affectedRows > 0){
-            res.status(200).send(defaultRes.successTrue(statusCode.OK, resMessage.BOARD_DELETE_SUCCESS));
-        }else{
-            res.status(200).send(defaultRes.successFalse(statusCode.OK, resMessage.BOARD_DELETE_NOTHING));
-        }
-    }
-});
 
 
 
