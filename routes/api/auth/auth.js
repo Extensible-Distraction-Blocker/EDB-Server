@@ -105,4 +105,64 @@ router.post('/signup', async (req, res) => {
 });
 
 
+//회원 정보 조회
+//코드 짬 테스트 x
+router.get('/:userIdx', async (req, res) => {
+const passwd = req.body.passwd;
+ const idx = req.params.userIdx;
+
+    if (!idx ) {
+        res.status(200).send(defaultRes.successFalse(statusCode.BAD_REQUEST, resMessage.OUT_OF_VALUE));
+    }
+
+    const getMembershipByIdQuery = 'SELECT * FROM user WHERE idx = ?';
+    const getMembershipByIdResult = await db.queryParam_Parse(getMembershipByIdQuery, [idx]);
+
+    if (!getMembershipByIdResult) {
+        res.status(200).send(defaultRes.successFalse(statusCode.INTERNAL_SERVER_ERROR, resMessage.MEMBERSHIP_SELECT_FAIL));
+    } else if (getMembershipByIdResult.length === 0) {
+        res.status(200).send(defaultRes.successFalse(statusCode.INTERNAL_SERVER_ERROR, resMessage.USERINFO_SELECT_FAIL));
+    } else { //쿼리문이 성공했을 때
+
+        const firstMembershipByIdResult=JSON.parse(JSON.stringify(getMembershipByIdResult[0]));
+
+        encrypt.getHashedPassword(passwd, firstMembershipByIdResult[0].salt, res, async (hashedPassword) => {            
+            if (firstMembershipByIdResult[0].passwd !== hashedPassword) {
+                // 비밀번호가 틀렸을 경우
+                res.status(200).send(defaultRes.successFalse(statusCode.INTERNAL_SERVER_ERROR, resMessage.USERINFO_SELECT_FAIL));
+            } else { 
+                // 로그인 정보가 일치할 때
+                // password, salt 제거
+                delete firstMembershipByIdResult[0].passwd;
+                delete firstMembershipByIdResult[0].salt;
+                //로그인 정보 일치할때 정보 가져오기 
+
+                const getUserInfoQuery = 'select idx,id,passwd,grade,email FROM user WHERE idx = ?';
+                const getUserInfoResult = await db.queryParam_Parse(getUserInfoQuery,[idx]);
+
+
+                //query 에러
+                if(!getUserInfoResult){
+                    
+                    res.status(200).send(defaultRes.successFalse(statusCode.INTERNAL_SERVER_ERROR, resMessage.USERINFO_SELECT_FAIL));
+                }else if(getUserInfoResult === 0){
+                    
+                    res.status(200).send(defaultRes.successFalse(statusCode.INTERNAL_SERVER_ERROR, resMessage.USERINFO_SELECT_FAIL));
+                }else{//쿼리문 성공시
+                    
+                    res.status(200).send(defaultRes.successTrue(statusCode.OK, resMessage.USERINFO_SELECT_SUCCESS,getUserInfoResult[0]));
+                }
+
+
+                
+            }
+        });
+    }
+});
+
+
+
+        
+        
+            
 module.exports = router;

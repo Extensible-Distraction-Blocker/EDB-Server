@@ -24,9 +24,6 @@ router.post("/", authUtil.isServiceProvider, async(req, res)=>{
 
  const {name,url,externalServiceDetailNames} = req.body;
 
-    console.log("externalServiceDetail\n");
-    console.log(externalServiceDetailNames);
-
     if (!name && !url && !externalServiceDetailNames) {
         res.status(200).send(defaultRes.successTrue(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
     } else {
@@ -34,40 +31,18 @@ router.post("/", authUtil.isServiceProvider, async(req, res)=>{
         try{
                 const getExternalServiceQuery = `SELECT * FROM external_service WHERE name = ?`;
                 const getExternalServiceResult  = await db.queryParam_Parse(getExternalServiceQuery,[name]) || null;
-                
-
                 if(!getExternalServiceResult|| getExternalServiceResult[0].length === 0){
-                    console.log("insert external_service");
-
                     const postExternalServiceQuery = `INSERT INTO external_service(name, url) VALUES(?,?)`;
                     var postExternalServiceResult  = await db.queryParam_Parse(postExternalServiceQuery,[name,url]);
-                console.log("insert external_service");
-//getExternalServiceIdx
-                            console.log("result222\n");
-                console.log(postExternalServiceResult[0].insertId);
                 }
-
-//                    const getExternalServiceResult_ = JSON.parse(JSON.stringify(postExternalServiceResult[0].insertId)) || null;
                     const getExternalServiceIdx = postExternalServiceResult[0].insertId;
-
-                    console.log("test getExternalServiceIdx\n");
-
-                    console.log(getExternalServiceIdx);
-
                     if(!getExternalServiceIdx){
                         res.status(200).send(defaultRes.successFalse(statusCode.DB_ERROR, resMessage.POST_EXTERNAL_SERVICE_ERROR));                    
                     }else{
 //반복문
-                    
                     for(var i=0; i<externalServiceDetailNames.length; i++) {
-                           //array[i]
-                             console.log("detail");
                             const postExternalServiceDetailQuery = `INSERT INTO external_service_detail(name, external_service_idx) VALUES(?,?)`;
                             var postExternalServiceDetailResult  = await db.queryParam_Parse(postExternalServiceDetailQuery,[externalServiceDetailNames[i],getExternalServiceIdx]);
-
-                            console.log("detailresult");
-                            console.log(postExternalServiceResult);
-
                     }
 
                       if(!postExternalServiceDetailResult || postExternalServiceDetailResult === 0){
@@ -77,7 +52,6 @@ router.post("/", authUtil.isServiceProvider, async(req, res)=>{
                             res.status(200).send(defaultRes.successTrue(statusCode.OK, resMessage.POST_EXTERNAL_SERVICE_SUCCESS));
                         }
                     }
-
 
             }catch(err){
                 res.status(200).send(defaultRes.successFalse(statusCode.DB_ERROR, resMessage.POST_EXTERNAL_SERVICE_ERROR));
@@ -192,33 +166,24 @@ router.delete('/:externalIdx', authUtil.isLoggedin, async(req, res) => {
 
 
 
+// 특정 외부 서비스 달성 여부 갱신
+//REQ : 특정 목표에 대한 idx
+////코드 짬 테스트 x
+router.put('/:externalIdx/:externalDetailIdx', async(req, res) => {
+    const externalIdx = req.params.externalIdx;
+    const externalDetailIdx = req.params.externalDetailIdx;
 
-
-
-
-// SERVICE PROVIDER가 특정 외부 서비스 수정
-//REQ : header에 token, 외부서비스묶음 idx
-// name , url
-// external_service_detail 에는 idx, name,external_service_idx
-router.put('/:boardIdx', authUtil.isServiceProvider, async(req, res) => {
-    const boardIdx = req.params.boardIdx;
-    
-    //name or type 하나만인경우도 추가하기!!
-    let name = "";
-    let type = "";
-    if(req.body.name) name+= req.body.name;
-    if(req.body.type) type+= req.body.type;
-
-    if(!name || !type ){
+    if(!externalIdx || !externalDetailIdx ){
         res.status(200).send(defaultRes.successFalse(statusCode.BAD_REQUEST, resMessage.OUT_OF_VALUE));
     }
     //본인이 올린 
-    let putBoardQuery =  "UPDATE  board  SET";
-    if(name)  putBoardQuery+= ` name = '${name}',`;        
-    if(type) putBoardQuery+= `  type = '${type}',`;
-    putBoardQuery = putBoardQuery.slice(0, putBoardQuery.length-1);
-    putBoardQuery += ` WHERE idx = '${boardIdx}'`;
+    let putBoardQuery =  "UPDATE  external_service_detail  SET";   
+    if(externalDetailIdx) putBoardQuery+= `  if_archieve = 1`;//달성
+//    putBoardQuery = putBoardQuery.slice(0, putBoardQuery.length-1);
+    putBoardQuery += ` WHERE external_service_idx = '${externalIdx}'`;
+    if(externalDetailIdx)putBoardQuery += `AND idx = '${externalDetailIdx}'`;
     
+    console.log("Test");
     console.log(putBoardQuery);
     let putBoardResult = await db.queryParam_None(putBoardQuery);
     if (!putBoardResult) {
@@ -229,33 +194,79 @@ router.put('/:boardIdx', authUtil.isServiceProvider, async(req, res) => {
 });
 
 
-// 특정 외부 서비스 달성 여부 갱신
-//REQ : 메인어플리케이션idx,특정 목표에 대한 idx
-router.put('/:boardIdx', authUtil.isAdmin, async(req, res) => {
-    const boardIdx = req.params.boardIdx;
-    //name or type 하나만인경우도 추가하기!!
-    let name = "";
-    let type = "";
-    if(req.body.name) name+= req.body.name;
-    if(req.body.type) type+= req.body.type;
 
-    if(!name || !type ){
+
+
+
+
+
+
+// SERVICE PROVIDER가 특정 외부 서비스 수정
+//REQ : header에 token, 외부서비스묶음 idx
+// name , url
+// external_service_detail 에는 idx, name,external_service_idx
+//externaldetail = detailName / external_Service = name,url
+////코드 짬 테스트 x
+router.put('/:externalIdx/:externalDetailIdx', authUtil.isServiceProvider, async(req, res) => {
+    const externalIdx = req.params.externalIdx;
+    const externalDetailIdx = req.params.externalDetailIdx;
+
+    var externalServicedetailName = '';
+    var externalServiceName = '';
+    var externalServiceUrl = '';
+
+    if(req.body.externalServicedetailName){
+        externalServicedetailName = req.body.externalServicedetailName;
+    }else if(req.body.externalServiceName || req.body.externalServiceUrl){
+        externalServiceUrl = req.body.externalServiceUrl;
+        externalServiceName = req.body.externalServiceName;
+    }
+
+    if(!externalIdx && !externalDetailIdx ){
         res.status(200).send(defaultRes.successFalse(statusCode.BAD_REQUEST, resMessage.OUT_OF_VALUE));
     }
-    //본인이 올린 
-    let putBoardQuery =  "UPDATE  board  SET";
-    if(name)  putBoardQuery+= ` name = '${name}',`;        
-    if(type) putBoardQuery+= `  type = '${type}',`;
-    putBoardQuery = putBoardQuery.slice(0, putBoardQuery.length-1);
-    putBoardQuery += ` WHERE idx = '${boardIdx}'`;
+
+
+    if(extenalIdx && externalDetailIdx){
+//detail 수정(name)
+
+        let putBoardQuery =  "UPDATE  external_service_detail SET";
+        if(!externalServicedetailName)  putBoardQuery+= ` name = '${externalServicedetailName}'`; 
+        putBoardQuery += ` WHERE idx = '${externalDetailIdx}'' AND external_service_idx = '${externalIdx}'`;
+        
+        console.log(putBoardQuery);
+        
+        let putBoardResult = await db.queryParam_None(putBoardQuery);
+        if (!putBoardResult) {
+            res.status(200).send(defaultRes.successFalse(statusCode.INTERNAL_SERVER_ERROR, resMessage.POST_UPDATE_ERROR));
+        }else{
+            res.status(200).send(defaultRes.successTrue(statusCode.OK, resMessage.POST_UPDATE_SUCCESS));
+        }
+
+    }else if(!externalDetailIdx){
+        //external_Service  수정
+
+        let putBoardQuery =  "UPDATE  external_service SET";
+        if(!externalServicedetailName)  putBoardQuery+= ` name = '${externalServicedetailName}',`; 
+        putBoardQuery = putBoardQuery.slice(0, putBoardQuery.length-1);
+        if(!externalServiceUrl) putBoardQuery+= ` url = '${externalServiceUrl}'`; 
+        putBoardQuery += ` WHERE idx = '${externalDetailIdx}'`;
+          
+        console.log("AA");
+        console.log(putBoardQuery);
+        
+        let putBoardResult = await db.queryParam_None(putBoardQuery);
+        if (!putBoardResult) {
+            res.status(200).send(defaultRes.successFalse(statusCode.INTERNAL_SERVER_ERROR, resMessage.POST_UPDATE_ERROR));
+        }else{
+            res.status(200).send(defaultRes.successTrue(statusCode.OK, resMessage.POST_UPDATE_SUCCESS));
+        }
     
-    console.log(putBoardQuery);
-    let putBoardResult = await db.queryParam_None(putBoardQuery);
-    if (!putBoardResult) {
-        res.status(200).send(defaultRes.successFalse(statusCode.INTERNAL_SERVER_ERROR, resMessage.POST_UPDATE_ERROR));
-    }else{
-        res.status(200).send(defaultRes.successTrue(statusCode.OK, resMessage.POST_UPDATE_SUCCESS));
+
     }
+
+
+
 });
 
 

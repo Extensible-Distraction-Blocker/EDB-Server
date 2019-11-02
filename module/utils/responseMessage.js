@@ -182,6 +182,9 @@ module.exports = {
     EXTERNAL_SERVICE_GET_ERROR:"외부 서비스 조회 실패",
     EXTERNAL_SERVICE_DELETE_SUCCESS:"외부 서비스 삭제 성공",
     EXTERNAL_SERVICE_DELETE_NOTHING:"갖고 있는 외부 서비스가 존재하지 않습니다.",
-    EXTERNAL_SERVICE_DELETE_ERROR:"외부 서비스 삭제 에러"
+    EXTERNAL_SERVICE_DELETE_ERROR:"외부 서비스 삭제 에러",
+
+    POST_LOCK_SUCCESS:"잠금 정책 등록 성공",
+    POST_LOCK_ERROR:"잠금 정책 등록 실패"
 
 };
