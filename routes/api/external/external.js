@@ -121,7 +121,7 @@ WHERE user_idx = ?";
 
 
 //본인의 외부서비스 목록 중 달성 목표 조회
-router.get('/:externalIdx',authUtil.isLoggedin,async (req, res) => {
+router.get('/detail/:externalIdx',authUtil.isLoggedin,async (req, res) => {
     let userIdx = req.decoded.user_idx;
     let externalIdx = req.params.externalIdx;
 
