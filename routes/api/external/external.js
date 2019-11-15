@@ -203,7 +203,6 @@ router.put('/:externalIdx/:externalDetailIdx',authUtil.isLoggedin, async(req, re
         res.status(200).send(defaultRes.successFalse(statusCode.BAD_REQUEST, resMessage.OUT_OF_VALUE));
     }
     //본인이 올린 
-
     let putBoardQuery =  "UPDATE user_external_service SET if_achieve = 1";   
 //    putBoardQuery = putBoardQuery.slice(0, putBoardQuery.length-1);
     if(externalDetailIdx) putBoardQuery += ` WHERE external_service_detail_idx = '${externalDetailIdx}'`;
