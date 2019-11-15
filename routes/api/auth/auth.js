@@ -12,6 +12,8 @@ const authUtil = require('../../../module/utils/authUtils');
 const jwtUtil = require('../../../module/utils/jwt');
 
 //로그인 ok's
+
+//로그인 ok's
 router.post('/signin', async (req, res) => {
 
  const {id, passwd} = req.body;
@@ -106,17 +108,17 @@ router.post('/signup', async (req, res) => {
 
 
 //회원 정보 조회
-//코드 짬 테스트 x
-router.get('/:userIdx', async (req, res) => {
+//ok
+router.get('/userinfo/', async (req, res) => {
 const passwd = req.body.passwd;
- const idx = req.params.userIdx;
+ const id = req.params.id;
 
-    if (!idx ) {
+    if (!id ) {
         res.status(200).send(defaultRes.successFalse(statusCode.BAD_REQUEST, resMessage.OUT_OF_VALUE));
     }
 
-    const getMembershipByIdQuery = 'SELECT * FROM user WHERE idx = ?';
-    const getMembershipByIdResult = await db.queryParam_Parse(getMembershipByIdQuery, [idx]);
+    const getMembershipByIdQuery = 'SELECT * FROM user WHERE id LIKE ?';
+    const getMembershipByIdResult = await db.queryParam_Parse(getMembershipByIdQuery, [id]);
 
     if (!getMembershipByIdResult) {
         res.status(200).send(defaultRes.successFalse(statusCode.INTERNAL_SERVER_ERROR, resMessage.MEMBERSHIP_SELECT_FAIL));
@@ -126,6 +128,8 @@ const passwd = req.body.passwd;
 
         const firstMembershipByIdResult=JSON.parse(JSON.stringify(getMembershipByIdResult[0]));
 
+        console.log("testsolt");
+        console.log(firstMembershipByIdResult);
         encrypt.getHashedPassword(passwd, firstMembershipByIdResult[0].salt, res, async (hashedPassword) => {            
             if (firstMembershipByIdResult[0].passwd !== hashedPassword) {
                 // 비밀번호가 틀렸을 경우
@@ -137,8 +141,8 @@ const passwd = req.body.passwd;
                 delete firstMembershipByIdResult[0].salt;
                 //로그인 정보 일치할때 정보 가져오기 
 
-                const getUserInfoQuery = 'select idx,id,passwd,grade,email FROM user WHERE idx = ?';
-                const getUserInfoResult = await db.queryParam_Parse(getUserInfoQuery,[idx]);
+                const getUserInfoQuery = 'select idx,id,grade,email FROM user WHERE id LIKE ?';
+                const getUserInfoResult = await db.queryParam_Parse(getUserInfoQuery,[id]);
 
 
                 //query 에러

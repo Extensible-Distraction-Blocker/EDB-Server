@@ -120,13 +120,34 @@ WHERE user_idx = ?";
 });
 
 
+//본인의 외부서비스 목록 중 달성 목표 조회
+router.get('/:externalIdx',authUtil.isLoggedin,async (req, res) => {
+    let userIdx = req.decoded.user_idx;
+    let externalIdx = req.params.externalIdx;
+
+    let getPostQuery  = "SELECT idx AS'external_service_detail_idx',name AS 'name', if_achieve AS 'if_achieve' \
+FROM external_service_detail ed \
+INNER JOIN user_external_service u ON ed.external_service_idx = u.external_service_idx \
+WHERE u.user_idx = ? AND u.external_service_idx = ?";
+
+    const getPostResult = await db.queryParam_Parse(getPostQuery,[userIdx,externalIdx]);
+
+    //쿼리문의 결과가 실패이면 null을 반환한다
+    if (!getPostResult) { //쿼리문이 실패했을 때
+        res.status(200).send(defaultRes.successFalse(statusCode.INTERNAL_SERVER_ERROR, resMessage.EXTERNAL_SERVICE_GET_ERROR));
+    } else { //쿼리문이 성공했을 때
+        res.status(200).send(defaultRes.successTrue(statusCode.OK, resMessage.EXTERNAL_SERVICE_GET_SUCCESS,getPostResult[0]));
+    }
+});
 
 
 //가능한 외부서비스 목록 조회
 //RESPONSE 가능한 외부서비스IDX, 이름 , URL
+//SELECT idx AS 'external_service_idx',url AS 'url',name AS 'name'  FROM external_service WHERE idx NOT IN (SELECT external_service_idx FROM user_external_service WHERE user_idx = 1);
 //ok
+//추가 : 본인 목록 제외해야하나?
 router.get('/available',async (req, res) => { 
-    let getPostQuery  = "SELECT * FROM external_service";
+    let getPostQuery  = "SELECT idx AS 'external_service_idx',url AS 'url',name AS 'name' FROM external_service";
     const getPostResult = await db.queryParam_None(getPostQuery);
 
     //쿼리문의 결과가 실패이면 null을 반환한다
@@ -136,6 +157,8 @@ router.get('/available',async (req, res) => {
         res.status(200).send(defaultRes.successTrue(statusCode.OK, resMessage.EXTERNAL_SERVICE_GET_SUCCESS,getPostResult[0]));
     }
 });
+
+
 
 
 
