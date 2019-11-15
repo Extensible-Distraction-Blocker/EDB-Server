@@ -106,7 +106,8 @@ router.get('/',authUtil.isLoggedin, async (req, res) => {
     let getPostQuery  = "SELECT user_idx,external_service_idx,name,url \
      FROM user_external_service \
 INNER JOIN external_service ON external_service_idx = idx \
-WHERE user_idx = ?";
+WHERE user_idx = ? \
+GROUP BY external_service_idx";
     const userIdx = req.decoded.user_idx;
 
     const getPostResult = await db.queryParam_Parse(getPostQuery,[userIdx]);
@@ -128,7 +129,9 @@ router.get('/detail/:externalIdx',authUtil.isLoggedin,async (req, res) => {
     let getPostQuery  = "SELECT idx AS'external_service_detail_idx',name AS 'name', if_achieve AS 'if_achieve' \
 FROM external_service_detail ed \
 INNER JOIN user_external_service u ON ed.external_service_idx = u.external_service_idx \
+AND ed.idx = u.external_service_detail_idx \
 WHERE u.user_idx = ? AND u.external_service_idx = ?";
+
 
     const getPostResult = await db.queryParam_Parse(getPostQuery,[userIdx,externalIdx]);
 
@@ -191,21 +194,23 @@ router.delete('/:externalIdx', authUtil.isLoggedin, async(req, res) => {
 
 // 특정 외부 서비스 달성 여부 갱신
 //REQ : 특정 목표에 대한 idx
-////코드 짬 테스트 x
-router.put('/:externalIdx/:externalDetailIdx', async(req, res) => {
+router.put('/:externalIdx/:externalDetailIdx',authUtil.isLoggedin, async(req, res) => {
     const externalIdx = req.params.externalIdx;
     const externalDetailIdx = req.params.externalDetailIdx;
+    const userIdx = req.decoded.user_idx;
 
     if(!externalIdx || !externalDetailIdx ){
         res.status(200).send(defaultRes.successFalse(statusCode.BAD_REQUEST, resMessage.OUT_OF_VALUE));
     }
     //본인이 올린 
-    let putBoardQuery =  "UPDATE  external_service_detail  SET";   
-    if(externalDetailIdx) putBoardQuery+= `  if_archieve = 1`;//달성
+
+    let putBoardQuery =  "UPDATE user_external_service SET if_achieve = 1";   
 //    putBoardQuery = putBoardQuery.slice(0, putBoardQuery.length-1);
-    putBoardQuery += ` WHERE external_service_idx = '${externalIdx}'`;
-    if(externalDetailIdx)putBoardQuery += `AND idx = '${externalDetailIdx}'`;
-    
+    if(externalDetailIdx) putBoardQuery += ` WHERE external_service_detail_idx = '${externalDetailIdx}'`;
+    if(externalIdx) putBoardQuery += ` AND external_service_idx ='${externalIdx}'`;
+    if(userIdx)  putBoardQuery += ` AND user_idx = '${userIdx}'`;
+
+
     console.log("Test");
     console.log(putBoardQuery);
     let putBoardResult = await db.queryParam_None(putBoardQuery);
