@@ -12,8 +12,6 @@ const authUtil = require('../../../module/utils/authUtils');
 const jwtUtil = require('../../../module/utils/jwt');
 
 //로그인 ok's
-
-//로그인 ok's
 router.post('/signin', async (req, res) => {
 
  const {id, passwd} = req.body;
@@ -51,11 +49,9 @@ router.post('/signin', async (req, res) => {
         });
     }
 });
+
 //user idx 7,9,12,13,14,15,16,17,18,19,20
 //회원가입 OKDK
-
-//id,passwd,salt,name,nickname,email
-
 //ok
 
 router.post('/signup', async (req, res) => {

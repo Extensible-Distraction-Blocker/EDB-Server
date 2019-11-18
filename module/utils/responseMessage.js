@@ -185,6 +185,13 @@ module.exports = {
     EXTERNAL_SERVICE_DELETE_ERROR:"외부 서비스 삭제 에러",
 
     POST_LOCK_SUCCESS:"잠금 정책 등록 성공",
-    POST_LOCK_ERROR:"잠금 정책 등록 실패"
+    POST_LOCK_ERROR:"잠금 정책 등록 실패",
+
+    EXTERNAL_SERVICE_GOAL_GET_SUCCESS:"외부 서비스 달성 목표 조회 성공",
+    USERS_LOCK_GET_SUCCESS:"USER의 잠금 정책 조회 성공",
+    USERS_LOCK_GET_ERROR:"USER의 잠금 정책 조회 실패",
+    POST_LOCK_DETAIL_EXIST:"이미 존재하는 설정입니다.",
+    POST_LOCK_DETAIL_SUCCESS:"특정 잠금 정책 설정 등록 성공",
+    POST_LOCK_DETAIL_ERROR:"특정 잠금 정책 설정 등록 실패"
 
 };
