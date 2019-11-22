@@ -61,5 +61,5 @@ docker run -dit --name 도커컨테이너명 -p 연결port:연결port 도커이�
 
 ### ERD
 <div>
-<img width=217 src="https://user-images.githubusercontent.com/29730565/69398217-9d7a9500-0d2c-11ea-986d-9582c565c40f.png">
+<img src="https://user-images.githubusercontent.com/29730565/69398217-9d7a9500-0d2c-11ea-986d-9582c565c40f.png">
 </div>
