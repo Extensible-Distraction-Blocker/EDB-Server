@@ -16,6 +16,29 @@ const jwtUtil = require('../../../module/utils/jwt');
 // USER가 등록한 잠금정책 목록 조회(불러오기u13)
 //일단ok
 /*
+
+{
+    "status": 200,
+    "success": true,
+    "message": "USER의 잠금 정책 조회 성공",
+    "data": [
+        {
+            "lock_idx": 3,
+            "name": "잠금정책2",
+            "configuration": "{object:chrome}",
+            "start_time": "08:19:00",
+            "end_time": "08:19:00"
+        },
+        {
+            "lock_idx": 5,
+            "name": "잠금정책4",
+            "configuration": "{object:game.exe}",
+            "start_time": "11:19:00",
+            "end_time": "11:19:00"
+        }
+    ]
+}
+
 ### response example
 < 보내지지 않은 경우
 <pre><code>{
@@ -298,6 +321,7 @@ WHERE user_idx = ?";
 
 
 //특정 잠금 대상 시간 목표 ,,,추가(잠금 정책 설정 등록)!!!!!!!!!!!
+//일단Ok
 //req : header에 token, User가 선택한 잠금 정책idx, Configuration
 //코드 안짬
 /* u14 설정 불러오기

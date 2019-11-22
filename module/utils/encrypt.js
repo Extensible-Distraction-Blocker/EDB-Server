@@ -1,11 +1,14 @@
 const defaultRes = require('./utils');
 const statusCode = require('./statusCode');
 const crypto = require('crypto');
+const adler32 = require('adler32');
+const assert = require('assert');
 
 const HASHING_CNT = 10;
 const HASHING_LENGTH = 32;
 const HASHING_ALGORITHM = "SHA512";
 const ENCODING = "base64";
+
 
 const authModule = {
     getSalt: function(res, callbackFunc){
@@ -28,6 +31,5 @@ const authModule = {
             }
         });
     }
-};
-
+}
 module.exports = authModule;

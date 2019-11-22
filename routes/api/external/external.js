@@ -433,6 +433,7 @@ router.put('/:externalIdx/:externalDetailIdx',authUtil.isLoggedin, async(req, re
 //externaldetail = detailName / external_Service = name,url
 ////코드 짬 테스트 x
 //git wiki 작성 x!!!!
+//spring x
 router.put('/:externalIdx/:externalDetailIdx', authUtil.isServiceProvider, async(req, res) => {
     const externalIdx = req.params.externalIdx;
     const externalDetailIdx = req.params.externalDetailIdx;
