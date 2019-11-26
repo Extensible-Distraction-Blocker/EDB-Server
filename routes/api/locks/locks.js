@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-const upload = require('../../../config/multer');
+
 const defaultRes = require('../../../module/utils/utils');
 const statusCode = require('../../../module/utils/statusCode');
 const resMessage = require('../../../module/utils/responseMessage');
@@ -23,14 +23,14 @@ const jwtUtil = require('../../../module/utils/jwt');
     "message": "USER의 잠금 정책 조회 성공",
     "data": [
         {
-            "lock_idx": 3,
+            "idx": 3,
             "name": "잠금정책2",
             "configuration": "{object:chrome}",
             "start_time": "08:19:00",
             "end_time": "08:19:00"
         },
         {
-            "lock_idx": 5,
+            "idx": 5,
             "name": "잠금정책4",
             "configuration": "{object:game.exe}",
             "start_time": "11:19:00",
@@ -60,7 +60,7 @@ const jwtUtil = require('../../../module/utils/jwt');
 //그럼 해당 user 토큰을 이용해서 유저가 가진 모든 plugidx,잠금시간,pluginconfig 불러오기
 
 router.get('/',authUtil.isLoggedin, async (req, res) => { 
-    let getPostQuery  = "SELECT lock_idx,l.name,configuration,\
+    let getPostQuery  = "SELECT lock_idx AS 'idx',l.name,configuration,\
     date_format(start_time, '%h:%d:%s') AS 'start_time',date_format(end_time, '%h:%d:%s') AS 'end_time'\
 FROM user_lock \
 INNER JOIN `lock` l ON lock_idx = l.idx \
@@ -76,7 +76,6 @@ WHERE user_idx = ?";
         res.status(200).send(defaultRes.successTrue(statusCode.OK, resMessage.USERS_LOCK_GET_SUCCESS,getPostResult[0]));
     }
 });
-
 
 
 
@@ -299,16 +298,18 @@ router.post("/", authUtil.isServiceProvider, async(req, res)=>{
 </code></pre>
 */
 //
-router.get('/:lockIdx',authUtil.isLoggedin, async (req, res) => { 
+router.get('/detail/:pluginIdx',authUtil.isLoggedin, async (req, res) => { 
     
 
-    let getPostQuery  = "SELECT user_idx, lock_idx, name,url,configuration \
-     FROM user_lock \
-INNER JOIN lock l ON lock_idx = l.idx \
-WHERE user_idx = ?";
+    let getPostQuery  = "SELECT  lock_idx AS 'idx', name,configuration,start_time,end_time \
+FROM user_lock \
+INNER JOIN `lock` l ON lock_idx = l.idx \
+WHERE lock_idx = ? AND user_idx = ?";
+
     const userIdx = req.decoded.user_idx;
 
-    const getPostResult = await db.queryParam_Parse(getPostQuery,[userIdx]);
+    const pluginIdx = req.params.pluginIdx;
+    const getPostResult = await db.queryParam_Parse(getPostQuery,[pluginIdx,userIdx]);
 
     //쿼리문의 결과가 실패이면 null을 반환한다
     if (!getPostResult) { //쿼리문이 실패했을 때
@@ -317,6 +318,13 @@ WHERE user_idx = ?";
         res.status(200).send(defaultRes.successTrue(statusCode.OK, resMessage.EXTERNAL_SERVICE_GET_SUCCESS,getPostResult[0]));
     }
 });
+
+
+//
+
+
+
+
 
 
 
@@ -628,14 +636,14 @@ router.get('/new/:lockIdx',async (req, res) => {
 </code></pre>
 */
 router.get('/available',async (req, res) => { 
-    let getPostQuery  = "SELECT * FROM lock";
+    let getPostQuery  = "SELECT * FROM  `lock`";
     const getPostResult = await db.queryParam_None(getPostQuery);
 
     //쿼리문의 결과가 실패이면 null을 반환한다
     if (!getPostResult) { //쿼리문이 실패했을 때
-        res.status(200).send(defaultRes.successFalse(statusCode.INTERNAL_SERVER_ERROR, resMessage.EXTERNAL_SERVICE_GET_ERROR));
+        res.status(200).send(defaultRes.successFalse(statusCode.INTERNAL_SERVER_ERROR, resMessage.PLUGIN_GET_ERROR));
     } else { //쿼리문이 성공했을 때
-        res.status(200).send(defaultRes.successTrue(statusCode.OK, resMessage.EXTERNAL_SERVICE_GET_SUCCESS,getPostResult[0]));
+        res.status(200).send(defaultRes.successTrue(statusCode.OK, resMessage.PLUGIN_GET_SUCCESS,getPostResult[0]));
     }
 });
 

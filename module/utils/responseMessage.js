@@ -192,6 +192,7 @@ module.exports = {
     USERS_LOCK_GET_ERROR:"USER의 잠금 정책 조회 실패",
     POST_LOCK_DETAIL_EXIST:"이미 존재하는 설정입니다.",
     POST_LOCK_DETAIL_SUCCESS:"특정 잠금 정책 설정 등록 성공",
-    POST_LOCK_DETAIL_ERROR:"특정 잠금 정책 설정 등록 실패"
-
+    POST_LOCK_DETAIL_ERROR:"특정 잠금 정책 설정 등록 실패",
+    PLUGIN_GET_SUCCESS:"사용 가능한 잠금 정책 조회 성공",
+    PLUGIN_GET_ERROR:"사용 가능한 잠금 정책 조회 실패"
 };
