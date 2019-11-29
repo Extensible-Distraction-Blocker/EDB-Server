@@ -403,9 +403,13 @@ router.post("/detail/:lockIdx", authUtil.isLoggedin, async(req, res)=>{
     let  {lockIdx} = req.params;
     let  userIdx = req.decoded.user_idx;
     let  {configuration,start_time,end_time} = req.body;
-
+console.log("check\n");
     console.log(start_time);
+    console.log("check2\n");
     console.log(end_time);
+    console.log("check3\n");
+    console.log(configuration);
+
 //'2019-11-19 20:00:00'
 // const createTime = moment().format("YYYY-MM-DD HH:mm");
 
@@ -416,13 +420,10 @@ router.post("/detail/:lockIdx", authUtil.isLoggedin, async(req, res)=>{
                 const getExternalServiceIdQuery = `SELECT * FROM user_lock WHERE user_idx = ? AND lock_idx = ?`;
                 const getExternalServiceIdResult  = await db.queryParam_Parse(getExternalServiceIdQuery,[userIdx,lockIdx]);
 
-                if(!getExternalServiceIdResult){
-                    res.status(200).send(defaultRes.successFalse(statusCode.DB_ERROR, resMessage.POST_LOCK_DETAIL_ERROR));
-
-                }else if(getExternalServiceIdResult[0].length > 0){
+                if(getExternalServiceIdResult[0].length > 0 ){
                     res.status(200).send(defaultRes.successFalse(statusCode.DB_ERROR, resMessage.POST_LOCK_DETAIL_EXIST));
-                }
-                else{
+                }else{
+
                     const postUserExternalServiceQuery = `insert into user_lock(lock_idx,user_idx,configuration,start_time,end_time) \
                     values (?,?,?,?,?)`;
                     const postUserExternalServiceResult  = await db.queryParam_Parse(postUserExternalServiceQuery,[lockIdx,userIdx,configuration,start_time,end_time]);
@@ -434,6 +435,7 @@ router.post("/detail/:lockIdx", authUtil.isLoggedin, async(req, res)=>{
                     }
 
                 }
+
     }
 });
 
