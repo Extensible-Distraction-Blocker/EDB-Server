@@ -403,12 +403,6 @@ router.post("/detail/:lockIdx", authUtil.isLoggedin, async(req, res)=>{
     let  {lockIdx} = req.params;
     let  userIdx = req.decoded.user_idx;
     let  {configuration,start_time,end_time} = req.body;
-console.log("check\n");
-    console.log(start_time);
-    console.log("check2\n");
-    console.log(end_time);
-    console.log("check3\n");
-    console.log(configuration);
 
 //'2019-11-19 20:00:00'
 // const createTime = moment().format("YYYY-MM-DD HH:mm");
