@@ -3,9 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www",
-    "nostart": "nodemon ./bin/www",
-    "teststart":"node app.js"
+    "teststart":"node app.js",
+    "nostart":"nodemon app.js"
   },
   "dependencies": {
     "adler32": "^0.1.7",

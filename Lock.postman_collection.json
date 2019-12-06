@@ -1,0 +1,217 @@
+{
+	"info": {
+		"_postman_id": "80fb91cf-3edc-4003-b6eb-15fd5669a414",
+		"name": "Lock",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "유저",
+			"item": [
+				{
+					"name": "localhost:3000/api/auth/signin",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\":\"audgpal27\",\n\t\"passwd\":\"123\",\n\t\"email\":\"meme91322367@gmail.com\"\n}"
+						},
+						"url": {
+							"raw": "localhost:3000/api/auth/signin",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"auth",
+								"signin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "localhost:3000/api/auth/signup",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\":\"audgpal27\",\n\t\"passwd\":\"123\",\n\t\"email\":\"meme91322367@gmail.com\"\n}"
+						},
+						"url": {
+							"raw": "localhost:3000/api/auth/signup",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"auth",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "localhost:3000/api/auth/signup",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\":\"meme2367\",\n\t\"passwd\":\"123\",\n\t\"email\":\"meme91322367@gmail.com\",\n\t\"grade\":\"SERVICE_PROVIDER\"\n}"
+						},
+						"url": {
+							"raw": "localhost:3000/api/auth/signup2",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"auth",
+								"signup2"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "외부서비스",
+			"item": [],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "잠금정책",
+			"item": [
+				{
+					"name": "가능한 잠금정책 목록 조회_200ok_01",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "72755454-5013-4d94-b490-9a7e203073cc",
+								"exec": [
+									"//tests[\"response code is 200\"] = responseCode.code === 200;",
+									"",
+									"pm.test(\"Content-Type header is present\", function () {",
+									"    pm.response.to.have.header(\"Content-Type\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									"//tests[\"response code is 200\"] = responseCode.code === 200;",
+									"",
+									"",
+									"",
+									"pm.test('call', ()=> {",
+									"    var jsonData = JSON.parse(responseBody);",
+									"    if(jsonData){",
+									"        if(jsonData.success){",
+									"            if(jsonData.data){",
+									"                tests[\"response is valid json\"] = true;",
+									"                            ",
+									"                ",
+									"            }else{",
+									"                tests[\"response is valid json\"] = false;",
+									"            }",
+									"        }",
+									"    }",
+									"});",
+									"",
+									"",
+									"//로그인",
+									"/*",
+									"pm.test('call', ()=> {",
+									"    var jsonData = JSON.parse(responseBody);",
+									"    if(jsonData){",
+									"        if(jsonData.success){",
+									"            if(jsonData.data){",
+									"                const token = jsonData.data.token;",
+									"                pm.environment.set(\"token\", token); // token 변수의 값을 설정",
+									"            }",
+									"        }",
+									"    }",
+									"});",
+									"*/"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkeCI6MSwiZ3JhZGUiOiJTRVJWSUNFX1BST1ZJREVSIiwiaWF0IjoxNTc0NzM1MzAxLCJleHAiOjE1NzU5NDQ5MDEsImlzcyI6Im15ZW9uZyJ9.Zsk1oCVjhltxb01fcpvFl-O4Ax-s3wd8XQFMYf70VfU",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\":\"meme2367\",\n\t\"passwd\":\"123\"\n\t\n}"
+						},
+						"url": {
+							"raw": "localhost:3000/api/locks/available",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"locks",
+								"available"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

@@ -75,17 +75,13 @@ host,port, user,database,password를 본인의 데이터 베이스 설정에 맞
 
 ##  기타 - 자주 일어나는 오류
 
-###1. mysql port 3306이 이미 사용되는 경우  delete port
+### 1. mysql port 3306이 이미 사용되는 경우  delete port
 ```
-1. sudo netstat -nlpt |grep 3306 
+ sudo netstat -nlpt |grep 3306 
 
-2. sudo service mysql stop
-
-or
-
-sudo service mysqld stop
+sudo service mysql stop or sudo service mysqld stop
 ```
-###2. api 실행이 안되는 경우
+### 2. api 실행이 안되는 경우
 
 run by :
 ```
@@ -97,6 +93,15 @@ docker logs edbservercontainer
 run by :
 ```
 docker-compose stop
+```
+
+
+### 4. mysql 컨테이너 접속 방법
+```
+docker exec -it dbcontainer /bin/bash
+
+ mysql -h 127.0.0.1 --port 3306 -uroot
+
 ```
 
 ## 기타 - ERD

@@ -36,6 +36,8 @@ build/Release
 node_modules/
 jspm_packages/
 
+backend-service/edb-server/node_modules/
+
 # TypeScript v1 declaration files
 typings/
 
@@ -60,18 +62,10 @@ typings/
 # next.js build output
 .next
 
-# Config
-**/*config.js
-config/
+# Config - opensource project로써, 
+#REST API와  DB를 SERVICE PROVIDER 에게 제공해야하기 때문에  configuration 공개
+#**/*config.js
+#config/
 
-# Youtube_link
-./youtub_*
-./youtub_link.json
-
-#creator_channelId
-
-
-#crawlfinal.py
-crawlFinal.py
 *.txt
 
