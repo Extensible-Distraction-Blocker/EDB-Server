@@ -15,10 +15,20 @@ Extensible-Distraction-Blocker
 run by : 
 ```
 git clone https://github.com/Extensible-Distraction-Blocker/EDB-Server.git
+
+cd EDB-Server/backend-service/edb-server/
+npm i
 docker-compose up --build -d
 docker-compose start
 ```
 해당 명령어로 docker-container를 띄우고 실제 postman 서비스를 이용가능하다.
+
+```
+
+docker logs edbservercontainer
+
+```
+연결 성공시 위 명령어를 통해 연결이 성공되었음이 로그로 확인가능하다.
 
 ## BUILD GUIDE - exact 방식
 
@@ -75,17 +85,13 @@ host,port, user,database,password를 본인의 데이터 베이스 설정에 맞
 
 ##  기타 - 자주 일어나는 오류
 
-###1. mysql port 3306이 이미 사용되는 경우  delete port
+### 1. mysql port 3306이 이미 사용되는 경우  delete port
 ```
-1. sudo netstat -nlpt |grep 3306 
+ sudo netstat -nlpt |grep 3306 
 
-2. sudo service mysql stop
-
-or
-
-sudo service mysqld stop
+sudo service mysql stop or sudo service mysqld stop
 ```
-###2. api 실행이 안되는 경우
+### 2. api 실행이 안되는 경우
 
 run by :
 ```
@@ -97,6 +103,15 @@ docker logs edbservercontainer
 run by :
 ```
 docker-compose stop
+```
+
+
+### 4. mysql 컨테이너 접속 방법
+```
+docker exec -it dbcontainer /bin/bash
+
+ mysql -h 127.0.0.1 --port 3306 -uroot
+
 ```
 
 ## 기타 - ERD

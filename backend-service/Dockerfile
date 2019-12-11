@@ -8,6 +8,7 @@ ADD ./edb-server /usr/src/edb-server/
 
 WORKDIR /usr/src/edb-server
 
+RUN rm -rf node_modules
 RUN npm install
 
 #RUN npm i pm2 -g
