@@ -16,7 +16,8 @@ run by :
 ```
 git clone https://github.com/Extensible-Distraction-Blocker/EDB-Server.git
 
-cd EDB-Server/
+cd EDB-Server/backend-service/edb-server/
+npm i
 docker-compose up --build -d
 docker-compose start
 ```
