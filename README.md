@@ -15,10 +15,19 @@ Extensible-Distraction-Blocker
 run by : 
 ```
 git clone https://github.com/Extensible-Distraction-Blocker/EDB-Server.git
+
+cd EDB-Server/
 docker-compose up --build -d
 docker-compose start
 ```
 해당 명령어로 docker-container를 띄우고 실제 postman 서비스를 이용가능하다.
+
+```
+
+docker logs edbservercontainer
+
+```
+연결 성공시 위 명령어를 통해 연결이 성공되었음이 로그로 확인가능하다.
 
 ## BUILD GUIDE - exact 방식
 

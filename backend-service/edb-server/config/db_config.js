@@ -18,8 +18,8 @@ const localtestConfig = {
 }
 
 //local exact test
-module.exports = mysql.createPool(localtestConfig);
+//module.exports = mysql.createPool(localtestConfig);
 
 
 //git-compose 이용 시 test
-//module.exports = mysql.createPool(dbConfig);
+module.exports = mysql.createPool(dbConfig);
