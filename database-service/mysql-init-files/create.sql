@@ -104,4 +104,9 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
 
-INSERT  INTO `flexiblelock`.`lock`(`name`,`url`) VALUES('잠금정책','설치url18.com');
+
+INSERT  INTO `flexiblelock`.`lock`(`name`,`url`) VALUES('naver','http://naver.com');
+INSERT  INTO `flexiblelock`.`lock`(`name`,`url`) VALUES('stucy_lock','http://study_lock.com');
+INSERT  INTO `flexiblelock`.`lock`(`name`,`url`) VALUES('google','http://google.com');
+INSERT  INTO `flexiblelock`.`lock`(`name`,`url`) VALUES('study_hard','http://study_hard.com');
+INSERT  INTO `flexiblelock`.`lock`(`name`,`url`) VALUES('daum','http://daum.com');
