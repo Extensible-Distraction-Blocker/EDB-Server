@@ -9,7 +9,7 @@
 			"name": "잠금정책",
 			"item": [
 				{
-					"name": "가능한 잠금정책 목록 조회_200ok_01",
+					"name": "가능한 잠금정책 목록 조회_200true_01",
 					"event": [
 						{
 							"listen": "test",
@@ -76,13 +76,13 @@
 							{
 								"key": "Content-Type",
 								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
+								"type": "text",
+								"value": "application/json"
 							},
 							{
 								"key": "token",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkeCI6MSwiZ3JhZGUiOiJTRVJWSUNFX1BST1ZJREVSIiwiaWF0IjoxNTc0NzM1MzAxLCJleHAiOjE1NzU5NDQ5MDEsImlzcyI6Im15ZW9uZyJ9.Zsk1oCVjhltxb01fcpvFl-O4Ax-s3wd8XQFMYf70VfU",
 								"type": "text",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkeCI6MSwiZ3JhZGUiOiJTRVJWSUNFX1BST1ZJREVSIiwiaWF0IjoxNTc0NzM1MzAxLCJleHAiOjE1NzU5NDQ5MDEsImlzcyI6Im15ZW9uZyJ9.Zsk1oCVjhltxb01fcpvFl-O4Ax-s3wd8XQFMYf70VfU",
 								"disabled": true
 							}
 						],
@@ -99,6 +99,701 @@
 							"path": [
 								"api",
 								"locks",
+								"available"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "잠금정책조회_200true1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "ddc083ba-85ab-4ce6-b6de-ddf1b5af967a",
+								"exec": [
+									"//tests[\"response code is 200\"] = responseCode.code === 200;",
+									"",
+									"pm.test(\"Content-Type header is present\", function () {",
+									"    pm.response.to.have.header(\"Content-Type\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									"//tests[\"response code is 200\"] = responseCode.code === 200;",
+									"",
+									"",
+									"",
+									"pm.test('call', ()=> {",
+									"    var jsonData = JSON.parse(responseBody);",
+									"    if(jsonData){",
+									"        if(jsonData.success){",
+									"            if(jsonData.data){",
+									"                tests[\"response is valid json\"] = true;",
+									"                            ",
+									"                ",
+									"            }else{",
+									"                tests[\"response is valid json\"] = false;",
+									"            }",
+									"        }",
+									"    }",
+									"});",
+									"",
+									"",
+									"//로그인",
+									"/*",
+									"pm.test('call', ()=> {",
+									"    var jsonData = JSON.parse(responseBody);",
+									"    if(jsonData){",
+									"        if(jsonData.success){",
+									"            if(jsonData.data){",
+									"                const token = jsonData.data.token;",
+									"                pm.environment.set(\"token\", token); // token 변수의 값을 설정",
+									"            }",
+									"        }",
+									"    }",
+									"});",
+									"*/"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"warning": "Value contains invalid newline characters.",
+								"key": "token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkeCI6MSwiZ3JhZGUiOiJTRVJWSUNFX1BST1ZJREVSIiwiaWF0IjoxNTc0OTg5MDc4LCJleHAiOjE1NzYxOTg2NzgsImlzcyI6Im15ZW9uZyJ9.1cq_muv66vWjLaCNJJokjHVACx7UaQax81_QtTG5LW4",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"start_time\":\"2019-11-19 18:00\",\n\t\"end_time\":\"2019-11-19 12:00\",\n\t\"configuration\":\"check\"\n}"
+						},
+						"url": {
+							"raw": "localhost:3000/api/locks/detail/1",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"locks",
+								"detail",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "잠금정책설정등록_200true1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "eefe325f-eb73-46e3-8f96-beaf8ec82395",
+								"exec": [
+									"//tests[\"response code is 200\"] = responseCode.code === 200;",
+									"",
+									"pm.test(\"Content-Type header is present\", function () {",
+									"    pm.response.to.have.header(\"Content-Type\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									"//tests[\"response code is 200\"] = responseCode.code === 200;",
+									"",
+									"",
+									"",
+									"pm.test('call', ()=> {",
+									"    var jsonData = JSON.parse(responseBody);",
+									"    if(jsonData){",
+									"        if(jsonData.success){",
+									"           ",
+									"                tests[\"response is success\"] = true;",
+									"                            ",
+									"                ",
+									"           ",
+									"           ",
+									"            }else{",
+									"                     tests[\"response is success\"] = false;",
+									"            }",
+									"        }",
+									"});",
+									"",
+									"",
+									"//로그인",
+									"/*",
+									"pm.test('call', ()=> {",
+									"    var jsonData = JSON.parse(responseBody);",
+									"    if(jsonData){",
+									"        if(jsonData.success){",
+									"            if(jsonData.data){",
+									"                const token = jsonData.data.token;",
+									"                pm.environment.set(\"token\", token); // token 변수의 값을 설정",
+									"            }",
+									"        }",
+									"    }",
+									"});",
+									"*/"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"warning": "Value contains invalid newline characters.",
+								"key": "token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkeCI6MSwiZ3JhZGUiOiJTRVJWSUNFX1BST1ZJREVSIiwiaWF0IjoxNTc0OTg5MDc4LCJleHAiOjE1NzYxOTg2NzgsImlzcyI6Im15ZW9uZyJ9.1cq_muv66vWjLaCNJJokjHVACx7UaQax81_QtTG5LW4",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"start_time\":\"2019-11-19 18:00\",\n\t\"end_time\":\"2019-11-19 12:00\",\n\t\"configuration\":\"check\"\n}"
+						},
+						"url": {
+							"raw": "localhost:3000/api/locks/detail/3",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"locks",
+								"detail",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "잠금정책설정등록_200false1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0b148161-8860-4078-bb3e-0e6771b59a28",
+								"exec": [
+									"//tests[\"response code is 200\"]=responseCode.code === 200;",
+									"",
+									"pm.test(\"Content-Type header is present\", function () {",
+									"    pm.response.to.have.header(\"Content-Type\");",
+									"});",
+									"",
+									"",
+									"//tests[\"response code is 200\"] = responseCode.code === 200;",
+									"",
+									"",
+									"",
+									"pm.test('call', ()=> {",
+									"    var jsonData = JSON.parse(responseBody);",
+									"    if(jsonData){",
+									"        if(jsonData.success){",
+									"        tests[\"response is success\"] = true;",
+									"            ",
+									"        }else{",
+									"        tests[\"response is success\"] = true;",
+									"        }",
+									"    }",
+									"});",
+									"",
+									"",
+									"//로그인",
+									"/*",
+									"pm.test('call', ()=> {",
+									"    var jsonData = JSON.parse(responseBody);",
+									"    if(jsonData){",
+									"        if(jsonData.success){",
+									"            if(jsonData.data){",
+									"                const token = jsonData.data.token;",
+									"                pm.environment.set(\"token\", token); // token 변수의 값을 설정",
+									"            }",
+									"        }",
+									"    }",
+									"});",
+									"*/"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"warning": "Value contains invalid newline characters.",
+								"key": "token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkeCI6MSwiZ3JhZGUiOiJTRVJWSUNFX1BST1ZJREVSIiwiaWF0IjoxNTc0OTg5MDc4LCJleHAiOjE1NzYxOTg2NzgsImlzcyI6Im15ZW9uZyJ9.1cq_muv66vWjLaCNJJokjHVACx7UaQax81_QtTG5LW4",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"start_time\":\"2019-11-19 18:00\",\n\t\"end_time\":\"2019-11-19 12:00\",\n\t\"configuration\":\"check\"\n}"
+						},
+						"url": {
+							"raw": "localhost:3000/api/locks/detail/1",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"locks",
+								"detail",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "유저",
+			"item": [
+				{
+					"name": "로그인_200ok1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "db0e4de1-4890-402f-9c6a-4ba21dc13d2f",
+								"exec": [
+									"//tests[\"response code is 200\"] = responseCode.code === 200;",
+									"",
+									"pm.test(\"Content-Type header is present\", function () {",
+									"    pm.response.to.have.header(\"Content-Type\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									"//tests[\"response code is 200\"] = responseCode.code === 200;",
+									"",
+									"",
+									"",
+									"pm.test('call', ()=> {",
+									"    var jsonData = JSON.parse(responseBody);",
+									"    if(jsonData){",
+									"        if(jsonData.success){",
+									"            if(jsonData.data){",
+									"                tests[\"response is valid json\"] = true;",
+									"                            ",
+									"                ",
+									"            }else{",
+									"                tests[\"response is valid json\"] = false;",
+									"            }",
+									"        }",
+									"    }",
+									"});",
+									"",
+									"",
+									"//로그인",
+									"pm.test('call', ()=> {",
+									"    var jsonData = JSON.parse(responseBody);",
+									"    if(jsonData){",
+									"        if(jsonData.success){",
+									"            if(jsonData.data){",
+									"                const token = jsonData.data.token;",
+									"                if(token){",
+									"                    tests[\"valid token\"]= true;    ",
+									"                }else{",
+									"                    tests[\"valid token\"]= false;                ",
+									"                }",
+									"                pm.environment.set(\"token\", token); // token 변수의 값을 설정",
+									"                ",
+									"            }",
+									"        }",
+									"    }",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\":\"meme2367\",\n\t\"passwd\":\"123\"\n\t\n}"
+						},
+						"url": {
+							"raw": "localhost:3000/api/auth/signin",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"auth",
+								"signin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "회원가입_400false1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "753f98a4-6f69-48b3-a135-0b8c8f5ed2f7",
+								"exec": [
+									"//tests[\"response code is 200\"] = responseCode.code === 200;",
+									"",
+									"pm.test(\"Content-Type header is present\", function () {",
+									"    pm.response.to.have.header(\"Content-Type\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									"//tests[\"response code is 200\"] = responseCode.code === 200;",
+									"",
+									"",
+									"pm.test('call', ()=> {",
+									"    var jsonData = JSON.parse(responseBody);",
+									"    if(jsonData){",
+									"        if(jsonData.success){",
+									"           ",
+									"                tests[\"response is success\"] = true;",
+									"                            ",
+									"                ",
+									"           ",
+									"           ",
+									"            }else{",
+									"                     tests[\"response is success\"] = false;",
+									"            }",
+									"        }",
+									"});",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\":\"meme2367\",\n\t\"passwd\":\"123\"\n\t\n}"
+						},
+						"url": {
+							"raw": "localhost:3000/api/auth/signup",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"auth",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "회원가입_200true1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d6ce66dd-726f-4d5d-ba7c-693b382c385c",
+								"exec": [
+									"//tests[\"response code is 200\"] = responseCode.code === 200;",
+									"",
+									"pm.test(\"Content-Type header is present\", function () {",
+									"    pm.response.to.have.header(\"Content-Type\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									"//tests[\"response code is 200\"] = responseCode.code === 200;",
+									"",
+									"",
+									"pm.test('call', ()=> {",
+									"    var jsonData = JSON.parse(responseBody);",
+									"    if(jsonData){",
+									"        if(jsonData.success){",
+									"           ",
+									"                tests[\"response is success\"] = true;",
+									"            }else{",
+									"                     tests[\"response is success\"] = false;",
+									"            }",
+									"        }",
+									"});",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\":\"testid2\",\n\t\"passwd\":\"1234\",\n\t\"email\":\"testemail2@gmail.com\",\n\t\"grade\":\"USER\"\n}\n"
+						},
+						"url": {
+							"raw": "localhost:3000/api/auth/signup",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"auth",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "외부서비스",
+			"item": [
+				{
+					"name": "특정외부서비스조회_401false1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "22298895-331b-4184-ba7f-b1ad84310c33",
+								"exec": [
+									"//tests[\"response code is 200\"] = responseCode.code === 200;",
+									"",
+									"pm.test(\"Content-Type header is present\", function () {",
+									"    pm.response.to.have.header(\"Content-Type\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									"//tests[\"response code is 200\"] = responseCode.code === 200;",
+									"",
+									"",
+									"pm.test('call', ()=> {",
+									"    var jsonData = JSON.parse(responseBody);",
+									"    if(jsonData){",
+									"        if(jsonData.success){",
+									"           ",
+									"                tests[\"response is success\"] = true;",
+									"            }else{",
+									"                     tests[\"response is success\"] = false;",
+									"            }",
+									"        }",
+									"});",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							},
+							{
+								"key": "token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkeCI6MSwiZ3JhZGUiOiJTRVJWSUNFX1BST1ZJREVSIiwiaWF0IjoxNTczMTI3NTIxLCJleHAiOjE1NzQzMzcxMjEsImlzcyI6Im15ZW9uZyJ9.R6Omk0LCEVWLrwsSy5rcVU7Uv2ocBN-tQsyO9b-zovk",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "localhost:3000/api/external/detail/14",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"external",
+								"detail",
+								"14"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "외부서비스조회_200true1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "4f0d82d3-deac-47f9-8d20-dc7368404695",
+								"exec": [
+									"//tests[\"response code is 200\"] = responseCode.code === 200;",
+									"",
+									"pm.test(\"Content-Type header is present\", function () {",
+									"    pm.response.to.have.header(\"Content-Type\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									"",
+									"",
+									"pm.test('call', ()=> {",
+									"    var jsonData = JSON.parse(responseBody);",
+									"    if(jsonData){",
+									"        if(jsonData.success){",
+									"            if(jsonData.data){",
+									"                tests[\"response is valid json\"] = true;",
+									"                            ",
+									"                ",
+									"            }else{",
+									"                tests[\"response is valid json\"] = false;",
+									"            }",
+									"        }",
+									"    }",
+									"});",
+									"",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkeCI6MSwiZ3JhZGUiOiJTRVJWSUNFX1BST1ZJREVSIiwiaWF0IjoxNTcyMTgzNDQ5LCJleHAiOjE1NzMzOTMwNDksImlzcyI6Im15ZW9uZyJ9._WmTQ9iNKOMlrPafbP-fgp5G7vIS1BCWdab7c75_xYA",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\":\"외부서비스14\",\n\t\"url\":\"https://www.naver.com\",\n\t\"externalServiceDetailNames\" : [\"네임1\",\"네임2\",\"네임3\"]\n}"
+						},
+						"url": {
+							"raw": "localhost:3000/api/external/available",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"external",
 								"available"
 							]
 						}
